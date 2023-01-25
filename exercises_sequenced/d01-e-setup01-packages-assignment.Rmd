@@ -6,6 +6,9 @@ output: github_document
 time: 5
 reading: 0
 ---
+```{r}
+
+```
 
 # Setup: Packages
 
@@ -27,6 +30,9 @@ In [RStudio](https://bookdown.org/yihui/rmarkdown/r-code.html) use the shortcut
 `Ctrl + Alt + I` (`Cmd + Option + I` on Mac). Type the command
 `library(tidyverse`).
 
+```{r}
+library(tidyverse)
+```
 
 Make sure to load packages at the *beginning* of your notebooks! This is a
 best-practice.

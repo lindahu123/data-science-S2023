@@ -30,9 +30,22 @@ knitr::opts_chunk$set(echo = TRUE)
 *Hint*: We learned how to inspect a dataset in `e-data-00-basics`!
 
 ```{r q1-task, eval=FALSE}
+help(diamonds)
 ```
 
+cut: the quality of the cut. Categories include fair, good, very good, premium
+and ideal.
+
+color: diamond color. Rated on a scale from D(best) to J(worst).
+
+clarity: measures how clear the diamond is from 
+(I1 (worst), SI2, SI1, VS2, VS1, VVS2, VVS1, IF (best))
+
 ### __q2__ Use your "standard checks" to determine what variables the dataset has.
+
+```{r}
+glimpse(diamonds)
+```
 
 
 Now that we have the list of variables in the dataset, we know what we can visualize!
@@ -46,12 +59,21 @@ y` pairs. Language is hard!
 
 ```{r q3-task}
 ## TODO: Complete this code
-ggplot(diamonds)
+diamonds %>% 
+  ggplot(aes(carat, price)) +
+  geom_point()
 ```
 
 **Observations**:
 
-- (Write your observations here!)
+From looking at the graph it appears that as the carat of the diamond increases, so does the cost of the diamond. For example, almost all of the diamonds under $5000 are rated as bring less than 1 carat. Conversely, all diamonds over 4 carat cost over $15,000. 
+
+There seems to be a lot of deviation in this data set, since there is no trend line through the graph that clearly would accurately represent the overall data set. This could be due to the fact that there are a lot of other qualities that likely also affect the price of the diamond, such as color of the diamond or clarity of the diamond.
+
+Another interesting observation is that there tend to be more data points at full carat values. There is a large cluster at 1 carat, than it slowly trickles out, then a large cluster just over 2 carats and then it trickles out again. I wonder if this is because more diamonds are made near full carat sizes.
+
+One last observation is that there are way more data points when carat size is smaller. After approximatey 2.5 carats, the number of data points thins out significantly. This makes sense, because it's diamonds that are higher in carat cost more and consequenly less people can afford them.
+
 
 ## A note on *aesthetics*
 
@@ -69,12 +91,14 @@ simultaneously.
 
 ```{r q4-task}
 ## TODO: Complete this code
-ggplot(diamonds)
+diamonds %>% 
+  ggplot(aes(x = carat, y = price, color = cut)) +
+  geom_point()
 ```
 
 **Observations**:
 
-- (Write your observations here!)
+In this graph, different cuts of diamonds are represented with different colors. It looks like most of the time ideal cuts cost more than the other cuts with a similar carat value. The cut of the diamond seens to play a significant role in the price of the diamond. For example, an ideal cut, 1 carat diamond looks to cost the same amount as a fair cut, 5 carat diamond. 
 
 <!-- include-exit-ticket -->
 # Exit Ticket

@@ -25,6 +25,7 @@ perfect!
 ```{r setup, include=FALSE}
 # knitr options
 knitr::opts_chunk$set(echo = TRUE)
+# 
 ```
 
 ### __q1__ What do the following keyboard shortcuts do?
@@ -66,9 +67,9 @@ Try this below!
 ## Re-indent these lines
 c(
   "foo",
-    "bar",
-      "goo",
-        "gah"
+  "bar",
+  "goo",
+  "gah"
 )
 ```
 

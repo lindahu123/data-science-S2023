@@ -31,8 +31,13 @@ associated with `"dplyr"`. What vignettes are available?
 
 ```{r q1-task, eval=FALSE}
 ## TODO: Re-write the code above following the tidyverse style guide
+vignette(package = "dplyr")
+
 ```
 
+```{r}
+browseVignettes("dplyr")
+```
 
 Once we know *what* vignettes are available, we can use the same function to
 read a particular vignette.
@@ -43,10 +48,10 @@ only those rows of the `iris` dataset where `Species == "setosa"`.
 
 *Note*: This should open up your browser.
 
+
 ```{r q2-task}
 iris %>%
-  as_tibble() %>%
-  filter(
+  as_tibble() %>% filter(Species == "setosa" )
     # TODO: Filter on Species "setosa"
   )
 ```
@@ -68,6 +73,9 @@ with `Sepal.Length` between `5.1` and `6.4`?
 
 ```{r q3-task}
 ## TODO: Consult the docs; Write your code here
+iris %>%
+  as_tibble() %>% filter(Sepal.Length >= 5.1, Sepal.Length <= 6.4 ) 
+
 ```
 
 
@@ -79,6 +87,9 @@ learn more.
 ### __q5__ Look up the documentation on `cut_number`; what package does it come
 from? What about `parse_number()`? What about `row_number()`?
 
+```{r}
+help(row_number)
+```
 
 <!-- include-exit-ticket -->
 # Exit Ticket
