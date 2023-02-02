@@ -51,11 +51,17 @@ df_titanic <- as_tibble(Titanic)
 
 ```{r q1-task}
 ## TASK: Perform a `glimpse` of df_titanic
+glimpse(df_titanic)
 ```
 
 **Observations**:
 
-- (List all variables here)
+The variables in this dateset are:
+Class: whether the person was 1st class, 2nd class, 3rd class, or a crew member on the titanic
+Sex of the person
+Age: whethere they were a child or an adult
+Survived: if they survived the titanic or not
+n: the number of people in that specific group
 
 ### __q2__ Skim the [Wikipedia article](https://en.wikipedia.org/wiki/RMS_Titanic) on the RMS Titanic, and look for a total count of souls aboard. Compare against the total computed below. Are there any differences? Are those differences large or small? What might account for those differences?
 
@@ -71,7 +77,9 @@ df_titanic %>% summarize(total = sum(n))
 - Are there any differences?
   - (Your response here)
 - If yes, what might account for those differences?
-  - (Your response here)
+  
+  The wikipedia article lists that a total of 2224 people were on-board the titanic. 1517 would die in the ship sinking, while 704 people survived. The date set we are given lists a total of 2201 people, which is fairly close to wikipedia estimate of total people. There are a few possible reasons for this discrepancy. The first being that perhaps certain records may have been lost over time. Another reason could be that their families requested that this information be kept anonymous. Since, the difference between the size of this data set and number of officially recorded passengers we can probably be fairly confident in the data.
+  
   - ...
 
 ### __q3__ Create a plot showing the count of persons who *did* survive, along with aesthetics for `Class` and `Sex`. Document your observations below.
@@ -80,11 +88,16 @@ df_titanic %>% summarize(total = sum(n))
 
 ```{r q3-task}
 ## TASK: Visualize counts against `Class` and `Sex`
+df_titanic %>%
+  filter(Survived == "Yes") %>% 
+  ggplot()+
+  geom_col(mapping = aes(x = Class, y = n, fill = Sex))
+
 ```
 
 **Observations**:
 
-- Write your observations here
+From looking at this graph, it is shown that among the passengers more females survived than males. However, among the crew the survivors were almost entirely male. It's hard to know if this was due to the crew was predominately male or because the male crew were more eager to secure spots in the lifeboats, since the graph doesn't show the breakdown of people that didn't survive. The same is true of the passengers. It is hard to analyze the data, since we don't know the percentages of males and females in each group that survived.
 
 # Deeper Look
 <!-- -------------------------------------------------- -->
@@ -105,31 +118,42 @@ df_prop <-
   ) %>%
   ungroup()
 df_prop
+
 ```
 
 ### __q4__ Replicate your visual from q3, but display `Prop` in place of `n`. Document your observations, and note any new/different observations you make in comparison with q3. Is there anything *fishy* in your plot?
 
 ```{r q4-task}
+df_prop %>% 
+  filter(Survived == "Yes") %>% 
+  ggplot()+
+    geom_col(mapping = aes(x = Class, y = Prop, fill = Sex))
 ```
 
 **Observations**:
 
 - Write your observations here.
 - Is there anything *fishy* going on in your plot?
-  - (Your response here)
+
+From looking at this chart, it looks like females did tend to survive at higher rates than males. The largest proportion of survivors were from first class, followed by second, and then third. Crew members had the lowest survival rate, especially male crew members.
+
+The "fishy" part of this plot if that the proportions are greater than 1. This is due to the fact that in the calculation the proportions are getting lumped together.
 
 ### __q5__ Create a plot showing the group-proportion of occupants who *did* survive, along with aesthetics for `Class`, `Sex`, *and* `Age`. Document your observations below.
 
 *Hint*: Don't forget that you can use `facet_grid` to help consider additional variables!
 
 ```{r q5-task}
+df_prop %>% 
+  filter(Survived == "Yes") %>% 
+  ggplot(aes(x = Class, y = Prop, fill = Sex)) +
+  geom_col() +
+  facet_grid(~ Age)
 ```
 
 **Observations**:
 
-- (Write your observations here.)
-- If you saw something *fishy* in q4 above, use your new plot to explain the fishy-ness.
-  - (Your response here)
+From looking at this data, it we can see that among adults females survived at much higher rates than males. This difference is most striking when looking at the proportion of males that survived in 2nd class. Among children however, the breakdown is fairly even. Overall, children survived at much higher rates than adults, especially if they were in first or second class.
 
 # Notes
 <!-- -------------------------------------------------- -->

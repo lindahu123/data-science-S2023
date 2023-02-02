@@ -58,7 +58,9 @@ in the table below:
 ### __q2__ Using `summarize()` and a logical summary function, determine the number of rows with `Ideal` `cut`. Save this value to a column called `n_ideal`.
 
 ```{r q2-task}
-df_q2
+df_q2 <-
+  diamonds %>%
+  summarize(n_ideal = sum(cut == "Ideal"))
 ```
 
 The following test will verify that your `df_q2` is correct:
@@ -78,7 +80,7 @@ print("Great job!")
 
 ```{r q3-task}
 diamonds %>%
-  ## group_by(color, clarity) %>%
+  group_by(color, clarity) %>%
   summarize(price = mean(price))
 ```
 
