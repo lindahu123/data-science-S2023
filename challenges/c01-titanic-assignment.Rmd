@@ -159,3 +159,8 @@ From looking at this data, it we can see that among adults females survived at m
 <!-- -------------------------------------------------- -->
 
 [1] This is basically the same idea as [Dimensional Analysis](https://en.wikipedia.org/wiki/Dimensional_analysis); computing proportions is akin to non-dimensionalizing a quantity.
+
+```{r}
+
+```
+
