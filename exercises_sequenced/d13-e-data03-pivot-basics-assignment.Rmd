@@ -70,7 +70,7 @@ cases
 
 ```{r q1-test}
 ## TODO: Modify with your answer
-q1_answer <- 0
+q1_answer <- 2
 
 ## NOTE: The following will test your answer
 if (((q1_answer + 56) %% 3 == 1) & (q1_answer > 0)) {
@@ -317,6 +317,13 @@ Undo the modification using a single pivot. Don't worry about column order.
 ```{r q3-task}
 df_q3_res <-
   df_q3 %>%
+  pivot_wider(
+    names_from = id,
+    names_prefix = "X-",
+    values_from = value)
+    
+
+  
 ## NOTE: Add your pivot here!
 
 df_q3_res
@@ -335,6 +342,10 @@ df_q4 <-
   )
 df_q4
 ```
+```{r}
+df_base
+```
+
 
 Undo the modification using a single pivot. Don't worry about column order.
 
@@ -342,8 +353,15 @@ Undo the modification using a single pivot. Don't worry about column order.
 Check the documentation for `pivot_longer`.
 
 ```{r q4-task}
-df_q4_res <-
+df_q4_res <- 
   df_q4 %>%
+  pivot_longer(
+    names_to = "key",
+    values_to = "X-0",
+    values_drop_na = TRUE,
+    cols = c(A, B, C) 
+  ) 
+  
 ## NOTE: Add your pivot here!
 
 df_q4_res
@@ -369,9 +387,11 @@ Undo the modification using a single pivot. Don't worry about column order.
 
 ```{r q5-task}
 df_q5_res <-
-  df_q5 %>%
-## NOTE: Add your pivot here!
-
+  df_q5 %>%pivot_longer(
+    names_to = c(".value", "key"),
+    names_sep = "_",
+    cols = everything()
+  )
 df_q5_res
 all_equal(df_base, df_q5_res) # Checks equality; returns TRUE if equal
 ```

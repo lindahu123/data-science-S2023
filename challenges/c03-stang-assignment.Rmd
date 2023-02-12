@@ -66,8 +66,14 @@ Note that these data are not tidy! The data in this form are convenient for repo
 ```{r q1-task}
 ## TASK: Tidy `df_stang`
 df_stang_long <-
-  df_stang
-
+  df_stang %>% 
+  pivot_longer(
+    names_to = c(".value", "angle"),
+    names_sep = "_",
+    values_to = "val",
+    starts_with("nu") | starts_with("E")) %>% 
+  filter(nu > 0)
+df_stang_long$angle = as.integer(df_stang_long$angle)
 df_stang_long
 ```
 
@@ -101,33 +107,43 @@ print("Very good!")
 ### __q2__ Perform a basic EDA on the aluminum data *without visualization*. Use your analysis to answer the questions under *observations* below. In addition, add your own *specific* question that you'd like to answer about the data---you'll answer it below in q3.
 
 ```{r q2-task}
-##
+df_stang_long %>%
+  group_by(thick) %>%
+  summarize(mean_E = mean(E), mean_nu = mean(nu))
 ```
 
 **Observations**:
 
 - Is there "one true value" for the material properties of Aluminum?
-  - (Your response here)
+  - It looks like from the data, the values for E and nu differ slightly at different angles, but from looking at a table of mean values, it looks like angle and thickness don't clearly impact the material properties
+  
 - How many aluminum alloys are in this dataset? How do you know?
-  - (Your response here)
+  - The only alloy listed is Al_24st
+  
 - What angles were tested?
-  - (Your response here)
+  - The angles tested are 0,45, and 90
+  
 - What thicknesses were tested?
-  - (Your response here)
-- (Write your own question here)
-
+  - The thicknesses test were 0.022, 0.032, 0.064, and 0.081
+  
+-Does thickness affect E?
+  -From looking at the table, it seems that the smallest thickness has the highest E, while the largest thickness has the smallest value for E. It would be intersting to take a closer look into whether there is an actual correlation between these parameters.
+  
 ## Visualize
 <!-- ------------------------- -->
 
 ### __q3__ Create a visualization to investigate your question from q2 above. Can you find an answer to your question using the dataset? Would you need additional information to answer your question?
 
 ```{r q3-task}
-## TASK: Investigate your question from q1 here
+df_stang_long %>%
+  ggplot +
+  geom_point(mapping = aes(x = thick, y = E))
+
 ```
 
 **Observations**:
 
-- (Address your question from q1 here)
+From looking at the graph it looks like there's a relatively wide range of E measurements for the same thickness. This uncertainty range makes it difficult to decisively say whether there is a correlation or not.
 
 ### __q4__ Consider the following statement:
 
@@ -138,7 +154,6 @@ Note that the "amount of material" would vary with the thickness of a tested pla
 ```{r q4-vis}
 ## NOTE: No need to change; run this chunk
 df_stang_long %>%
-
   ggplot(aes(nu, E, color = as_factor(thick))) +
   geom_point(size = 3) +
   theme_minimal()
@@ -147,7 +162,7 @@ df_stang_long %>%
 **Observations**:
 
 - Does this graph support or contradict the claim above?
-  - (Your response here)
+The graph does not seem to contradict the claim above. The E values for 0.032 and 0.064 are almost exactly the same, despite one thickness being double the other one. It is notable that the values for 0.081 are much lower than the others, both for E and poisson's ratio. I wonder if the 0.081 sample was formed a different way or if it is a slightly different alloy. 
 
 # References
 <!-- -------------------------------------------------- -->
