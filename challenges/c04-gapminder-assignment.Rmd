@@ -55,12 +55,14 @@ First, we'll go through a round of *guided EDA*. Try to pay attention to the hig
 dataset?
 
 ```{r q0-task}
-## TASK: Do your "first checks" here!
+help(gapminder)
+glimpse(gapminder)
 ```
 
 **Observations**:
 
-- Write all variable names here
+The variables in this data set are:
+country, continent, year (1952 - 2007 in 5 year increments), life expectancy (in years), population, GDP per capita (USD, adjusted for inflation)
 
 ### __q1__ Determine the most and least recent years in the `gapminder` dataset.
 
@@ -68,8 +70,15 @@ dataset?
 
 ```{r q1-task}
 ## TASK: Find the largest and smallest values of `year` in `gapminder`
-year_max <- NA_real_
-year_min <- NA_real_
+years_list <-
+  gapminder %>% 
+  group_by(year) %>% 
+  pull(year)
+
+year_max <-
+  max(years_list)
+year_min <-
+  min(years_list)
 ```
 
 Use the following test to check your work.
@@ -94,27 +103,33 @@ print("Nice!")
 You may encounter difficulties in visualizing these data; if so document your challenges and attempt to produce the most informative visual you can.
 
 ```{r q2-task}
-## TASK: Create a visual of gdpPercap vs continent
+gapminder %>% 
+  filter(year == year_min) %>% 
+  ggplot +
+  geom_boxplot(mapping = aes(x = continent, y = gdpPercap))
 ```
 
 **Observations**:
 
-- Write your observations here
+It's difficult to read this chart, because the scaling on the graph is messed up by the outlier with an over 90000 gdp per capita. However, I can still see that Oceania has the highest overall gdp, whole Africa and Asia are on the lower end. There are also many outliers represented on the graph as points. Africa has a few, Americas have 3, Asia has 2, and Europe has 1.
 
 **Difficulties & Approaches**:
 
-- Write your challenges and your approach to solving them
+It's difficult to read this chart, because the scaling on the graph is messed up by the outlier with an over 90000 gdp per capita. I attempted to look through the reading on box plots in order to figure out how to fix the scaling, however I wasn't able to figure it out.
 
 ### __q3__ You should have found *at least* three outliers in q2 (but possibly many more!). Identify those outliers (figure out which countries they are).
 
 ```{r q3-task}
-## TASK: Identify the outliers from q2
+gapminder %>% 
+  filter(year == year_min) %>% 
+  group_by(continent) %>% 
+  filter(gdpPercap >= quantile(gdpPercap, 0.75) + 1.5*IQR(gdpPercap))
 ```
 
 **Observations**:
 
-- Identify the outlier countries from q2
-  - (Your response here)
+From looking at the list of outliers, I can see that there are a few countries that I would expect on the list, for example the US, Switzerland, and South Africa. There were some smaller countries that I was suprised to see on the list and didn't know anything about. For example, Bahrain and Kuwait. But through some quick online digging, it looks like those countries economies are largely driven by oil reserves which could be an explanation for their high gdp per capitas.
+
 
 *Hint*: For the next task, it's helpful to know a ggplot trick we'll learn in an upcoming exercise: You can use the `data` argument inside any `geom_*` to modify the data that will be plotted *by that geom only*. For instance, you can use this trick to filter a set of points to label:
 
@@ -137,12 +152,24 @@ gapminder %>%
 *Hint*: We've learned a lot of different ways to show multiple variables; think about using different aesthetics or facets.
 
 ```{r q4-task}
-## TASK: Create a visual of gdpPercap vs continent
+gapminder %>% 
+  filter(year == year_min) %>% 
+  filter(gdpPercap < 30000) %>% 
+  ggplot +
+  geom_boxplot(mapping = aes(x = continent, y = gdpPercap))
+
+gapminder %>% 
+  filter(year == year_max) %>% 
+  ggplot +
+  geom_boxplot(mapping = aes(x = continent, y = gdpPercap))
+
 ```
 
 **Observations**:
 
-- Write your observations here
+From looking at the most recent data, it looks like there are fewer outliers for most of the continents. It looks like the americas have 2 outliers, while Africa has around 5 or 6. Asia and Europe have the largest IQRs, which means that the gdp's for countries in those continents are much more varied than the countries in Oceania. 
+
+Compairing between 
 
 # Your Own EDA
 <!-- -------------------------------------------------- -->
@@ -151,20 +178,30 @@ Now it's your turn! We just went through guided EDA considering the GDP per capi
 
 ### __q5__ Create *at least* three new figures below. With each figure, try to pose new questions about the data.
 
-```{r q5-task1}
-## TASK: Your first graph
+```{r q5-task1} 
+gapminder %>% 
+  filter(year == year_max) %>% 
+  ggplot +
+  geom_point(mapping = aes(x = gdpPercap, y = lifeExp))
 ```
 
-- (Your notes and observations here)
+The reason I made this graph was to understand the relationship between gdp per capita and life expectancy. I wanted to understand the extent to which wealth could improve life expectancy.From looking at the graph, it looks like for very low gdp's (below 5000) life expectancy is quite low. However, after gdp increases past 15000 or so there is no noticeable change in the life expectancy. 
+
 
 ```{r q5-task2}
-## TASK: Your second graph
+gapminder %>% 
+  filter(country %in% c("Kuwait","United States")) %>% 
+  ggplot +
+  geom_point(mapping = aes(x = year, y = gdpPercap, color = country))
 ```
 
-- (Your notes and observations here)
+I made this graph to look at how countries who's economies rely on natural resources, such as oil reserves, fare over time. Since there are a finite amount of easily reachable oil reserves it's interesting to look at the gdp of such a country over time. For Kuwait, it looks like they started off with a gdp per capita over 4 times higher than the US in 1952, and by 1980 it fell to a gdp per capita similar to that of the US. It would be interesting to look into whether the country still primarily exports oil, or if it has greatly diversified it's economy.
 
 ```{r q5-task3}
-## TASK: Your third graph
+gapminder %>% 
+  filter(country %in% c("France", "United States", "China","Australia")) %>% 
+  ggplot +
+  geom_point(mapping = aes(x = year, y = lifeExp, color = country))
 ```
 
 - (Your notes and observations here)

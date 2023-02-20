@@ -72,8 +72,8 @@ df_stang_long <-
     names_sep = "_",
     values_to = "val",
     starts_with("nu") | starts_with("E")) %>% 
-  filter(nu > 0)
-df_stang_long$angle = as.integer(df_stang_long$angle)
+  filter(nu > 0) %>% 
+  mutate(angle = as.integer(angle)) 
 df_stang_long
 ```
 
@@ -111,6 +111,11 @@ df_stang_long %>%
   group_by(thick) %>%
   summarize(mean_E = mean(E), mean_nu = mean(nu))
 ```
+```{r q2-task}
+df_stang_long %>%
+  group_by(angle) %>%
+  summarize(mean_E = mean(E), mean_nu = mean(nu))
+```
 
 **Observations**:
 
@@ -143,7 +148,7 @@ df_stang_long %>%
 
 **Observations**:
 
-From looking at the graph it looks like there's a relatively wide range of E measurements for the same thickness. This uncertainty range makes it difficult to decisively say whether there is a correlation or not.
+From looking at the graph it looks like there's a relatively wide range of E measurements for the same thickness. Due to the large uncertainty range, the correlation between these parameters seems to be negative but weak.
 
 ### __q4__ Consider the following statement:
 
