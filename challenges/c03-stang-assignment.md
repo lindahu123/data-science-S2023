@@ -163,8 +163,8 @@ df_stang_long <-
     names_sep = "_",
     values_to = "val",
     starts_with("nu") | starts_with("E")) %>% 
-  filter(nu > 0)
-df_stang_long$angle = as.integer(df_stang_long$angle)
+  filter(nu > 0) %>% 
+  mutate(angle = as.integer(angle)) 
 df_stang_long
 ```
 
@@ -208,8 +208,7 @@ assertthat::assert_that(all(dim(df_stang_long) == c(26, 5)))
 ``` r
 ## Type
 assertthat::assert_that(
-              (df_stang_long %>% pull(angle) %>% typeof()) == "integer"
-            )
+              (df_stang_long %>% pull(angle) %>% typeof()) == "integer")
 ```
 
     ## [1] TRUE
@@ -243,6 +242,19 @@ df_stang_long %>%
     ## 2 0.032 10383.   0.324
     ## 3 0.064 10500    0.326
     ## 4 0.081  9975    0.314
+
+``` r
+df_stang_long %>%
+  group_by(angle) %>%
+  summarize(mean_E = mean(E), mean_nu = mean(nu))
+```
+
+    ## # A tibble: 3 × 3
+    ##   angle mean_E mean_nu
+    ##   <int>  <dbl>   <dbl>
+    ## 1     0 10356.   0.320
+    ## 2    45 10362.   0.324
+    ## 3    90 10289.   0.320
 
 **Observations**:
 
@@ -280,8 +292,9 @@ df_stang_long %>%
 **Observations**:
 
 From looking at the graph it looks like there’s a relatively wide range
-of E measurements for the same thickness. This uncertainty range makes
-it difficult to decisively say whether there is a correlation or not.
+of E measurements for the same thickness. Due to the large uncertainty
+range, the correlation between these parameters seems to be negative but
+weak.
 
 ### **q4** Consider the following statement:
 

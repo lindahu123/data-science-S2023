@@ -92,8 +92,7 @@ assertthat::assert_that(
 assertthat::assert_that(all(dim(df_stang_long) == c(26, 5)))
 ## Type
 assertthat::assert_that(
-              (df_stang_long %>% pull(angle) %>% typeof()) == "integer"
-            )
+              (df_stang_long %>% pull(angle) %>% typeof()) == "integer")
 
 print("Very good!")
 ```
@@ -111,7 +110,7 @@ df_stang_long %>%
   group_by(thick) %>%
   summarize(mean_E = mean(E), mean_nu = mean(nu))
 ```
-```{r q2-task}
+```{r q2-task pt 2}
 df_stang_long %>%
   group_by(angle) %>%
   summarize(mean_E = mean(E), mean_nu = mean(nu))
