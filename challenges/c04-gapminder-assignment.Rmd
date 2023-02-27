@@ -204,4 +204,4 @@ gapminder %>%
   geom_point(mapping = aes(x = year, y = lifeExp, color = country))
 ```
 
-- (Your notes and observations here)
+The reason I made this graph to examine the effect on life expectancy that the great leap forward had in China. I had previously learned in history class that it was one of the most devastaing famines in history, and as shown in the graph there is a noticable dip in life expentancy in the years that followed the great leap forward. 

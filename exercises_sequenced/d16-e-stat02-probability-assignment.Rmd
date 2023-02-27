@@ -77,7 +77,12 @@ Now it's your turn!
 ## NOTE: No need to change this!
 df_z <- tibble(z = rnorm(100))
 
+
 ## TODO: Compute `count_total`, `count_A`, and `fr`
+df_z %>%
+  mutate(in_A = (z <= 0)) %>%
+  summarize(count_total = n(), count_A = sum(in_A), fr = mean(in_A))
+
 ```
 
 **Observations**:

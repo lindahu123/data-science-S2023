@@ -92,7 +92,8 @@ looks.
 ## TODO: Add a "gam" and "lm" smooth to the following plot
 diamonds %>%
   ggplot(aes(carat, price)) +
-  geom_point()
+  geom_point() +
+  geom_smooth(aes(carat, price), mathod = glm)
 ```
 
 **Observations**:

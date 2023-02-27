@@ -74,7 +74,6 @@ For all five of the visuals, you must show information on *all 16 bacteria*. For
 In this visual you must show *all three* effectiveness values for *all 16 bacteria*. You must also show whether or not each bacterium is Gram positive or negative.
 
 ```{r q1.1}
-# WRITE YOUR CODE HERE
 ```
 
 #### Visual 2 (All variables)
