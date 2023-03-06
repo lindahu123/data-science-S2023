@@ -59,6 +59,8 @@ df_antibiotics %>% knitr::kable()
 # Visualization
 <!-- -------------------------------------------------- -->
 
+
+
 ### __q1__ Prototype 5 visuals
 
 To start, construct **5 qualitatively different visualizations of the data** `df_antibiotics`. These **cannot** be simple variations on the same graph; for instance, if two of your visuals could be made identical by calling `coord_flip()`, then these are *not* qualitatively different.
@@ -69,11 +71,36 @@ For all five of the visuals, you must show information on *all 16 bacteria*. For
 
 *Hint 2*: The data `df_antibiotics` are in a *wide* format; it may be helpful to `pivot_longer()` the data to make certain visuals easier to construct.
 
+```{r pre-q1}
+df_antibiotics_longer <-
+  df_antibiotics %>% 
+  pivot_longer(
+    names_to = "antibiotic_type",
+    values_to = "mic_value",
+    values_transform  = list(id = as.integer),
+    cols = c(penicillin, streptomycin, neomycin))
+df_antibiotics_longer
+```
+
 #### Visual 1 (All variables)
 
 In this visual you must show *all three* effectiveness values for *all 16 bacteria*. You must also show whether or not each bacterium is Gram positive or negative.
 
+
 ```{r q1.1}
+df_antibiotics_longer %>% 
+  filter(mic_value < 10) %>% 
+  ggplot() +
+  geom_point(mapping = aes(x = bacteria, y = mic_value, color = gram), size = 2) +
+  geom_hline(yintercept=0.1, linetype="dashed", color = "black") + 
+  geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = 0.1, ymax = Inf),
+            alpha = 1/100,
+            fill = "red") +
+  geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = 0.1),
+            alpha = 1/500,
+            fill = "green") +
+  coord_flip() +
+  facet_grid(~ antibiotic_type)
 ```
 
 #### Visual 2 (All variables)
@@ -83,7 +110,19 @@ In this visual you must show *all three* effectiveness values for *all 16 bacter
 Note that your visual must be *qualitatively different* from *all* of your other visuals.
 
 ```{r q1.2}
-# WRITE YOUR CODE HERE
+df_antibiotics_longer %>% 
+  filter(mic_value < 10) %>% 
+  ggplot() +
+  geom_point(mapping = aes(x = bacteria, y = mic_value, color = antibiotic_type), size = 2) +
+  geom_hline(yintercept=0.1, linetype="dashed", color = "black") +
+  geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = 0.1, ymax = Inf),
+            alpha = 1/100,
+            fill = "red") +
+  geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = 0.1),
+            alpha = 1/500,
+            fill = "green") +
+  coord_flip() +
+  facet_grid(~ gram)
 ```
 
 #### Visual 3 (Some variables)
@@ -93,7 +132,13 @@ In this visual you may show a *subset* of the variables (`penicillin`, `streptom
 Note that your visual must be *qualitatively different* from *all* of your other visuals.
 
 ```{r q1.3}
-# WRITE YOUR CODE HERE
+df_antibiotics_longer %>% 
+  filter(antibiotic_type == "penicillin") %>% 
+  filter(mic_value < 10) %>%
+  ggplot() +
+  geom_point(mapping = aes(x = bacteria, y = mic_value, color = gram), size = 2) +
+  geom_hline(yintercept=0.1, linetype="dashed", color = "black") +
+  coord_flip()
 ```
 
 #### Visual 4 (Some variables)
@@ -103,7 +148,13 @@ In this visual you may show a *subset* of the variables (`penicillin`, `streptom
 Note that your visual must be *qualitatively different* from *all* of your other visuals.
 
 ```{r q1.4}
-# WRITE YOUR CODE HERE
+df_antibiotics_longer %>% 
+  filter(antibiotic_type == "streptomycin") %>%
+  filter(mic_value < 10) %>%
+  ggplot() +
+  geom_point(mapping = aes(x = bacteria, y = mic_value, color = gram), size = 2) +
+  geom_hline(yintercept=0.1, linetype="dashed", color = "black") +
+  coord_flip()
 ```
 
 #### Visual 5 (Some variables)
@@ -113,7 +164,13 @@ In this visual you may show a *subset* of the variables (`penicillin`, `streptom
 Note that your visual must be *qualitatively different* from *all* of your other visuals.
 
 ```{r q1.5}
-# WRITE YOUR CODE HERE
+df_antibiotics_longer %>% 
+  filter(antibiotic_type == "neomycin") %>% 
+  filter(mic_value < 10) %>%
+  ggplot() +
+  geom_point(mapping = aes(x = bacteria, y = mic_value, color = gram), size = 2) +
+  geom_hline(yintercept=0.1, linetype="dashed", color = "black") +
+  coord_flip()
 ```
 
 ### __q2__ Assess your visuals
@@ -130,11 +187,12 @@ There are **two questions** below; use your five visuals to help answer both Gui
 
 *Observations*
 - What is your response to the question above?
-  - (Write your response here)
+  - Penicillin was only effective for positive gram bacteria. It was very effective at treating strep and staphylococcus. Streptomycin worked well for staphylococcus infections but not for strep. It was also below the threshold for one gram negative bacteria (Proteus Vulgaris). Neomycin was the most effective of the 3 antibiotics at treating gram negative bacteria. It also was below the mic threshold of 0.1 for treating some gram positive bacteria like strep as well.
+  
 - Which of your visuals above (1 through 5) is **most effective** at helping to answer this question?
-  - (Write your response here)
+  - The most helpful for observing patterns was visual 1. To zoom into each antibiotic more visuals 3 - 5 were very helpful too.
 - Why?
-  - (Write your response here)
+  - Visual 1 was very useful because it showed the mic_value for each of the antibiotics and you could see which ones performed better for each bacteria. The points were colored to show whether it was a gram positive or gram negative bacteria. This made it easy to spot whether a specific antibiotic worked very well for a certain genera or if it worked better for a specific gram type. The limitation of the plot is that some of the points overlap since the Mic_value is very similar. To deal with that I had to look at visuals 3 -5 which showed each antibiotic seperately.
 
 #### Guiding Question 2
 
@@ -144,11 +202,12 @@ In 1974 *Diplococcus pneumoniae* was renamed *Streptococcus pneumoniae*, and in 
 
 *Observations*
 - What is your response to the question above?
-  - (Write your response here)
+  - The streptococcus bacterias (except for fecalis which was later renamed) are gram positive and respond well to penicillin. If you look at Diplococcus pneumoniae those two facts are also true. This could mean that the cell structure of Diplococcus pneumoniae was decided to be close enough to the streptococcus bacterias that it could be reclassified into the same genera.
+  
 - Which of your visuals above (1 through 5) is **most effective** at helping to answer this question?
-  - (Write your response here)
+  - Visual 2
 - Why?
-  - (Write your response here)
+  - You can easily tell from visual 2 that all 3 bacteria are gram positive. You can also see that they have the same green dots (penicillin) that are below the threshold line which means it's an effective treatment. 
 
 
 # References

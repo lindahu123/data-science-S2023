@@ -291,6 +291,7 @@ df_base <-
          2,      8,  "B",
          3,      7,  "C"
   )
+df_base
 ```
 
 We're going to play a game: I'm going to modify the data, and your job is to
