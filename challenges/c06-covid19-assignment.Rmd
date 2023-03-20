@@ -78,7 +78,11 @@ That's the high-level view; now let's dig into the details.
 
 ```{r q1-task}
 ## TASK: Load the census bureau data with the following tibble name.
-df_pop <- NA
+filename <- "./data/ACSDT5Y2018.B01003-Data.csv"
+
+df_pop <- read_csv(filename, skip = 1)
+df_pop
+?read_csv
 ```
 
 *Note*: You can find information on 1-year, 3-year, and 5-year estimates [here](https://www.census.gov/programs-surveys/acs/guidance/estimates.html). The punchline is that 5-year estimates are more reliable but less current.
@@ -94,7 +98,7 @@ The New York Times is publishing up-to-date data on COVID-19 on [GitHub](https:/
 
 ```{r q2-task}
 ## TASK: Find the URL for the NYT covid-19 county-level data
-url_counties <- NA_character_
+url_counties <- "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"
 ```
 
 Once you have the url, the following code will download a local copy of the data, then load the data into R.
@@ -112,6 +116,7 @@ curl::curl_download(
 
 ## Loads the downloaded csv
 df_covid <- read_csv(filename_nyt)
+df_covid
 ```
 
 You can now re-run the chunk above (or the entire notebook) to pull the most recent version of the data. Thus you can periodically re-run this notebook to check in on the pandemic as it evolves.
@@ -135,7 +140,13 @@ To join these datasets, we'll need to use [FIPS county codes](https://en.wikiped
 
 ```{r q3-task}
 ## TASK: Create a `fips` column by extracting the county code
-df_q3 <- NA
+df_q3 <-
+  df_pop %>% 
+  separate(
+    col = Geography,
+    into = c("trash", "fips"),
+    sep = "US")
+df_q3
 ```
 
 Use the following test to check your answer.
@@ -155,7 +166,13 @@ print("Very good!")
 
 ```{r q4-task}
 ## TASK: Join df_covid and df_q3 by fips.
-df_q4 <- NA
+df_q4 <- 
+  df_q3 %>% 
+  right_join(
+    df_covid,
+    by = "fips"
+  )
+df_q4
 ```
 
 For convenience, I down-select some columns and produce more convenient column
@@ -174,6 +191,7 @@ df_data <-
     deaths,
     population = `Estimate!!Total`
   )
+df_data
 ```
 
 # Analyze
@@ -189,7 +207,10 @@ Now that we've done the hard work of loading and wrangling the data, we can fina
 ```{r q5-task}
 ## TASK: Normalize cases and deaths
 df_normalized <-
-  df_data
+  df_data %>% 
+  group_by(county) %>%
+  mutate(cases_per100k = (cases/population)*100000, deaths_per100k = (deaths/population)*100000)
+df_normalized
 ```
 
 You may use the following test to check your work.
@@ -237,24 +258,60 @@ Before turning you loose, let's complete a couple guided EDA tasks.
 
 ```{r q6-task}
 ## TASK: Compute mean and sd for cases_per100k and deaths_per100k
+df_stats <-
+  df_normalized %>% 
+  group_by(date) %>%
+  summarise(
+    sd_cases = sd(cases_per100k, na.rm = TRUE),
+    mean_cases = mean(cases_per100k, na.rm = TRUE),
+    sd_deaths = sd(deaths_per100k,na.rm = TRUE),
+    mean_deaths = mean(deaths_per100k,na.rm = TRUE))
+df_stats
+
+df_stats %>% 
+  ggplot() +
+  geom_point(mapping = aes(x = date, y = mean_cases))
+
 ```
 
 ### __q7__ Find the top 10 counties in terms of `cases_per100k`, and the top 10 in terms of `deaths_per100k`. Report the population of each county along with the per-100,000 counts. Compare the counts against the mean values you found in q6. Note any observations.
 
 ```{r q7-task}
 ## TASK: Find the top 10 max cases_per100k counties; report populations as well
+sorted_cases_cases <-
+  df_normalized %>% 
+  summarize(max_cases_per100k = max(cases_per100k)) %>%
+  arrange(desc(max_cases_per100k)) %>% 
+  slice(1:10)
+sorted_cases_cases
 
-## TASK: Find the top 10 deaths_per100k counties; report populations as well
+sorted_cases_deaths <-
+  df_normalized %>% 
+  summarize(max_deaths_per100k = max(deaths_per100k)) %>%
+  arrange(desc(max_deaths_per100k)) %>% 
+  slice(1:10)
+sorted_cases_deaths
 ```
 
 **Observations**:
+From looking at the max cases, it's shocking that for many counties, rates of infections were as high as 50k cases per 100k. From looking at the data for Loving, Texas, it's also shocking that somehow there the reported cases per 100k was actually over 100k. It's unclear what happened to the data for this to be the case.
 
-- (Note your observations here!)
+In comparing the counties with max cases to the counties with max deaths, it's interesting that there isn't much overlap. The only county on both lists is Loving, Texas. I has thought that places with higher cases would be likely to have more deaths as well. It would be interesting to look at how rural certain places are, since it's possible that other factors (such as proximity to hospitals) might have a larger factor in death rate than the infection rate.
 
 ## Self-directed EDA
 <!-- ------------------------- -->
 
 ### __q8__ Drive your own ship: You've just put together a very rich dataset; you now get to explore! Pick your own direction and generate at least one punchline figure to document an interesting finding. I give a couple tips & ideas below:
+
+```{r q8-task}
+df_normalized %>%
+  group_by(date) %>% 
+  filter(state %in% c("Oregon", "Florida")) %>%
+  filter(cases_per100k > 0) %>%
+  ggplot(aes(state, cases_per100k)) +
+  geom_boxplot()
+  
+```
 
 ### Ideas
 <!-- ------------------------- -->

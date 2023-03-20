@@ -35,7 +35,7 @@ library(gapminder)
 ## TODO: Fix the following code
 gapminder %>%
   filter(continent == "Asia") %>%
-  ggplot(aes(year, lifeExp)) +
+  ggplot(aes(year, lifeExp, color = country)) +
   geom_line()
 ```
 
@@ -45,7 +45,7 @@ gapminder %>%
 ## TODO: No need to edit; just answer the questions
 mpg %>%
   ggplot(aes(displ, hwy)) +
-  geom_line()
+  geom_point()
 
 ```
 
