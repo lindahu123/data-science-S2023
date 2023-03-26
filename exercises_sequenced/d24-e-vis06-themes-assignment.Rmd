@@ -69,6 +69,7 @@ The `%+replace` magic above allows you to use `theme_common()` within your own g
 mpg %>%
   ggplot(aes(displ, hwy, color = class)) +
   geom_point() +
+  theme_common()+
   labs(
     x = "Engine Displacement (L)",
     y = "Highway Fuel Economy (mpg)"
@@ -90,7 +91,12 @@ mpg %>%
   ggplot(aes(displ, hwy, color = class)) +
   geom_point() +
   theme(
-    axis.text.x = element_text(size = 32)
+    line = element_line(size = 3, color = "purple"),
+    rect = element_rect(fill = "red"),
+    axis.text.x = element_text(size = 32, angle = 117),
+    axis.text.y = element_text(size = 32, angle = 129),
+    axis.title.x = element_text(size = 32, family = "Comic Sans MS"),
+    axis.title.y = element_text(size = 32, family = "Comic Sans MS")
   )
 ```
 
