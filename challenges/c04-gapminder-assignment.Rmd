@@ -106,7 +106,8 @@ You may encounter difficulties in visualizing these data; if so document your ch
 gapminder %>% 
   filter(year == year_min) %>% 
   ggplot +
-  geom_boxplot(mapping = aes(x = continent, y = gdpPercap))
+  geom_boxplot(mapping = aes(x = continent, y = gdpPercap)) +
+  scale_y_log10()
 ```
 
 **Observations**:
@@ -153,15 +154,17 @@ gapminder %>%
 
 ```{r q4-task}
 gapminder %>% 
-  filter(year == year_min) %>% 
+  filter(year %in% c(year_min,year_max)) %>% 
   filter(gdpPercap < 30000) %>% 
-  ggplot +
-  geom_boxplot(mapping = aes(x = continent, y = gdpPercap))
-
-gapminder %>% 
-  filter(year == year_max) %>% 
-  ggplot +
-  geom_boxplot(mapping = aes(x = continent, y = gdpPercap))
+  ggplot() +
+  geom_boxplot(mapping = aes(x = continent, y = gdpPercap)) +
+  facet_wrap(~ year) +
+  geom_point(
+    data = . %>% filter(country %in% c("United States", "Angola", "Bahrain", "Canada", "Gabon", "South Africa", "Switzerland","Venezuela")),
+    mapping = aes(x = continent, y = gdpPercap, color = country),
+    size = 2
+  ) +
+  scale_y_log10()
 
 ```
 
@@ -182,10 +185,11 @@ Now it's your turn! We just went through guided EDA considering the GDP per capi
 gapminder %>% 
   filter(year == year_max) %>% 
   ggplot +
-  geom_point(mapping = aes(x = gdpPercap, y = lifeExp))
+  geom_point(mapping = aes(x = gdpPercap, y = lifeExp)) +
+  scale_y_log10()
 ```
 
-The reason I made this graph was to understand the relationship between gdp per capita and life expectancy. I wanted to understand the extent to which wealth could improve life expectancy.From looking at the graph, it looks like for very low gdp's (below 5000) life expectancy is quite low. However, after gdp increases past 15000 or so there is no noticeable change in the life expectancy. 
+The reason I made this graph was to understand the relationship between gdp per capita and life expectancy. I wanted to understand the extent to which wealth could improve life expectancy.From looking at the graph, it looks like for very low gdp's (below 5000) life expectancy is quite low. However, after gdp increases past 15000 the relationship gets weaker. 
 
 
 ```{r q5-task2}
@@ -201,7 +205,8 @@ I made this graph to look at how countries who's economies rely on natural resou
 gapminder %>% 
   filter(country %in% c("France", "United States", "China","Australia")) %>% 
   ggplot +
-  geom_point(mapping = aes(x = year, y = lifeExp, color = country))
+  geom_point(mapping = aes(x = year, y = lifeExp, color = country)) + 
+  scale_y_log10()
 ```
 
 The reason I made this graph to examine the effect on life expectancy that the great leap forward had in China. I had previously learned in history class that it was one of the most devastaing famines in history, and as shown in the graph there is a noticable dip in life expentancy in the years that followed the great leap forward. 

@@ -209,7 +209,8 @@ can.
 gapminder %>% 
   filter(year == year_min) %>% 
   ggplot +
-  geom_boxplot(mapping = aes(x = continent, y = gdpPercap))
+  geom_boxplot(mapping = aes(x = continent, y = gdpPercap)) +
+  scale_y_log10()
 ```
 
 ![](c04-gapminder-assignment_files/figure-gfm/q2-task-1.png)<!-- -->
@@ -292,22 +293,20 @@ variables; think about using different aesthetics or facets.
 
 ``` r
 gapminder %>% 
-  filter(year == year_min) %>% 
+  filter(year %in% c(year_min,year_max)) %>% 
   filter(gdpPercap < 30000) %>% 
-  ggplot +
-  geom_boxplot(mapping = aes(x = continent, y = gdpPercap))
+  ggplot() +
+  geom_boxplot(mapping = aes(x = continent, y = gdpPercap)) +
+  facet_wrap(~ year) +
+  geom_point(
+    data = . %>% filter(country %in% c("United States", "Angola", "Bahrain", "Canada", "Gabon", "South Africa", "Switzerland","Venezuela")),
+    mapping = aes(x = continent, y = gdpPercap, color = country),
+    size = 2
+  ) +
+  scale_y_log10()
 ```
 
 ![](c04-gapminder-assignment_files/figure-gfm/q4-task-1.png)<!-- -->
-
-``` r
-gapminder %>% 
-  filter(year == year_max) %>% 
-  ggplot +
-  geom_boxplot(mapping = aes(x = continent, y = gdpPercap))
-```
-
-![](c04-gapminder-assignment_files/figure-gfm/q4-task-2.png)<!-- -->
 
 **Observations**:
 
@@ -334,7 +333,8 @@ the relationship between variables, or something else entirely.
 gapminder %>% 
   filter(year == year_max) %>% 
   ggplot +
-  geom_point(mapping = aes(x = gdpPercap, y = lifeExp))
+  geom_point(mapping = aes(x = gdpPercap, y = lifeExp)) +
+  scale_y_log10()
 ```
 
 ![](c04-gapminder-assignment_files/figure-gfm/q5-task1-1.png)<!-- -->
@@ -343,8 +343,7 @@ The reason I made this graph was to understand the relationship between
 gdp per capita and life expectancy. I wanted to understand the extent to
 which wealth could improve life expectancy.From looking at the graph, it
 looks like for very low gdp’s (below 5000) life expectancy is quite low.
-However, after gdp increases past 15000 or so there is no noticeable
-change in the life expectancy.
+However, after gdp increases past 15000 the relationship gets weaker.
 
 ``` r
 gapminder %>% 
@@ -368,7 +367,8 @@ primarily exports oil, or if it has greatly diversified it’s economy.
 gapminder %>% 
   filter(country %in% c("France", "United States", "China","Australia")) %>% 
   ggplot +
-  geom_point(mapping = aes(x = year, y = lifeExp, color = country))
+  geom_point(mapping = aes(x = year, y = lifeExp, color = country)) + 
+  scale_y_log10()
 ```
 
 ![](c04-gapminder-assignment_files/figure-gfm/q5-task3-1.png)<!-- -->
