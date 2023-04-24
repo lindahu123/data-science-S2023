@@ -185,7 +185,7 @@ Data Dictionary:
 ``` r
 df_samples %>% 
   ggplot(aes(strength)) +
-  geom_histogram(bins = 6)
+  geom_histogram(bins = 10)
 ```
 
 ![](c08-structures-assignment_files/figure-gfm/q1-task-1.png)<!-- -->
@@ -196,8 +196,8 @@ df_samples %>%
   - the mean strength of the material is approximately 39,750 PSI
 - To what extent can you tell what shape the distribution of the data
   has?
-  - From this limited bin size/sample size, it appears to follow a
-    normal distribution
+  - From this limited sample size, there is not enough of a pattern to
+    determine whether this data follows a normal distribution.
 - Assuming the scopus is the strength of an individual part made from
   this aluminum alloy, is the observed variability real or induced?
   - The observed variability is real differences in the aluminum
@@ -256,38 +256,34 @@ as the `mean()` of an indicator. Use the same strategy here.
 ``` r
 ## TODO: Estimate the probability of failure; i.e. POF = Pr[g <= 0]
 
-POF_df <- g_break(df_samples)
-
-POF_df %>% 
-  summarize(FOS = g_break(strength), count_fail = sum(FOS < 0), POF = count_fail/25) 
+df_samples %>% 
+  mutate(g_break = g_break(strength), POF = (g_break <= 0)) %>% 
+  summarize(mean = mean(POF), sd = sd(POF))
 ```
 
-    ##          FOS count_fail POF
-    ## 1  -38947.41         25   1
-    ## 2  -38619.39         25   1
-    ## 3  -38379.81         25   1
-    ## 4  -37912.25         25   1
-    ## 5  -38386.21         25   1
-    ## 6  -38271.26         25   1
-    ## 7  -38337.70         25   1
-    ## 8  -38756.97         25   1
-    ## 9  -38287.37         25   1
-    ## 10 -38566.15         25   1
-    ## 11 -38881.19         25   1
-    ## 12 -38584.00         25   1
-    ## 13 -38487.42         25   1
-    ## 14 -38155.60         25   1
-    ## 15 -38392.39         25   1
-    ## 16 -38458.92         25   1
-    ## 17 -39030.38         25   1
-    ## 18 -38730.11         25   1
-    ## 19 -38647.39         25   1
-    ## 20 -38671.97         25   1
-    ## 21 -38775.86         25   1
-    ## 22 -38477.68         25   1
-    ## 23 -37524.32         25   1
-    ## 24 -39035.21         25   1
-    ## 25 -37944.71         25   1
+    ## # A tibble: 1 × 2
+    ##    mean    sd
+    ##   <dbl> <dbl>
+    ## 1     0     0
+
+``` r
+df_samples
+```
+
+    ## # A tibble: 25 × 1
+    ##    strength
+    ##       <dbl>
+    ##  1   39484.
+    ##  2   39812.
+    ##  3   40052.
+    ##  4   40519.
+    ##  5   40045.
+    ##  6   40160.
+    ##  7   40094.
+    ##  8   39674.
+    ##  9   40144.
+    ## 10   39865.
+    ## # … with 15 more rows
 
 **Observations**:
 
@@ -379,23 +375,23 @@ df_norm_pof <-
   mutate(
     pof_lo = pof_est - 1.96 * se,
     pof_hi = pof_est + 1.96 * se
-  ) %>%
-  select(pof_lo, pof_est, pof_hi)
+  ) 
 
 df_norm_pof
 ```
 
-    ## # A tibble: 1 × 3
-    ##   pof_lo pof_est pof_hi
-    ##    <dbl>   <dbl>  <dbl>
-    ## 1 0.0141  0.0178 0.0215
+    ## # A tibble: 1 × 4
+    ##   pof_est      se pof_lo pof_hi
+    ##     <dbl>   <dbl>  <dbl>  <dbl>
+    ## 1  0.0174 0.00185 0.0138 0.0210
 
 - Assuming your scopus is the probability of failure `POF` defined
   above, does your estimate exhibit real variability, induced
   variability, or both?
 
-  - both. induced variability could could from manufacturing defects.
-    real variability could come from the process with rlnorm
+  - There should just be induced variability. For there to be real
+    variability in the POF, the underlying distribution would need to be
+    changing which is not likely in this scenario
 
 - Does this confidence interval imply that `POF < 0.03`?
 
@@ -423,8 +419,8 @@ df_norm_pof
 
 - Can you *confidently* conclude that `POF < 0.03`? Why or why not?
 
-  - Although we can’t be 100% sure, we are fairly confident that this is
-    true due to the 95% confidence interval
+  - No, we cannot confidently conclude that because of the limited
+    physical tests
 
 ## A different way to compute the POF
 
@@ -499,9 +495,7 @@ df_samples %>% estimate_pof()
     physical tests
 - With the scopus as the `POF`, would uncertainty due to *limited
   physical tests* be induced or real?
-  - both. induced variability could could from manufacturing defects.
-    real variability could come from the random uncontrollable aspects
-    such as the way in which the aluminum forms
+  - The uncertainty due to limited physical tests would be induced
 
 ## Quantifying sampling uncertainty
 
@@ -533,9 +527,9 @@ df_samples %>%
 ```
 
     ## # A tibble: 1 × 6
-    ##   term    .lower .estimate .upper .alpha .method   
-    ##   <chr>    <dbl>     <dbl>  <dbl>  <dbl> <chr>     
-    ## 1 pof   0.000954    0.0182 0.0459   0.05 percentile
+    ##   term   .lower .estimate .upper .alpha .method   
+    ##   <chr>   <dbl>     <dbl>  <dbl>  <dbl> <chr>     
+    ## 1 pof   0.00132    0.0176 0.0468   0.05 percentile
 
 **Observations**:
 
@@ -544,8 +538,7 @@ df_samples %>%
   - no it accounts for uncertainty arrising from plnorm
 - Does the confidence interval above account for uncertainty arising
   from *limited physical tests* (`df_samples`)? Why or why not?
-  - no, it accounts for uncertainty arrising from plnorm and now defects
-    n the given sample
+  - bootstrap quantifies the uncertainty rising from a limited sampple
 - Can you confidently conclude that `POF < 0.03`? Why or why not?
   - No, because the probility of 0.03 lies within the confidence
     interval
