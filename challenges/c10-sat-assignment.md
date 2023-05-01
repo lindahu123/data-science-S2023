@@ -207,7 +207,10 @@ glimpse(df_sat)
 - Based on these missing variables, what possible effects could be
   present in the data that we would have *no way of detecting*?
   - All of the missing variables could potentially affect the outcome of
-    the data
+    the data. For example, it could be possible that the students have a
+    background in computer science clubs which would help their
+    performance in the college computer science class, but we would have
+    no way of knowing that.
 
 # Analysis with Hypothesis Testing
 
@@ -424,7 +427,9 @@ cor.test(both_SAT, univ_GPA)
 **Observations**:
 
 - Which correlations are significantly nonzero?
-  - both correlations are significantly nonzero
+  - both correlations are significantly nonzero. We know it is
+    significant because the lower end of the 95% confidence interval is
+    larger than zero.
 - Which of `high_GPA` and `both_SAT` seems to be more strongly
   correlated with `univ_GPA`?
   - high_GPA appears to be more strongly correlated with univ_GPA
@@ -467,7 +472,7 @@ tibble(
     ## # A tibble: 1 × 3
     ##   lower_ci estimate upper_ci
     ##      <dbl>    <dbl>    <dbl>
-    ## 1    0.694    0.782    0.846
+    ## 1    0.702    0.785    0.847
 
 **Observations**:
 
@@ -572,9 +577,8 @@ tibble(
 
 - What is the confidence interval on the coefficient of `both_SAT`? Is
   this coefficient significantly different from zero?
-  - the confidence interval does not include zero, which is good. The
-    lower end of the confidence interval for the coefficient is very
-    close to zero however.
+  - the confidence interval does not include zero, which means that the
+    coefficient is significant
 - By itself, how well does `both_SAT` predict `univ_GPA`?
   - From looking at the mse, it looks like the error is relatively small
     compared to the GPA scale. However, from computing correlations
@@ -632,7 +636,8 @@ tibble(
   - the confidence interval for the coefficient of both_SAT includes 0
     in the interval, so it is not significantly greater than 0.
 - How do the hypothesis test results compare with the results in q6?
-  - (Your response here)
+  - The results suggest that high_GPA is a better predictor than SAT
+    score
 
 ## Synthesize
 
