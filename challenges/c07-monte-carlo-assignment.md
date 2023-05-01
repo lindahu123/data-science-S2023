@@ -207,15 +207,15 @@ df_q1 <-
 ## TASK: Estimate pi using your data from q1
 pi_est <- 
   df_q1 %>% 
-  mutate(in_area = (x^2+y^2 <= 1)) %>% 
-  summarize(mean = mean(in_area)*4, sd = sd(in_area)*4)
+  mutate(in_area = (x^2+y^2 <= 1)*4) %>% 
+  summarize(mean = mean(in_area), sd = sd(in_area))
 pi_est
 ```
 
     ## # A tibble: 1 × 2
     ##    mean    sd
     ##   <dbl> <dbl>
-    ## 1  3.17  1.62
+    ## 1  3.16  1.63
 
 # Quantifying Uncertainty
 
@@ -242,7 +242,7 @@ df_clt
     ## # A tibble: 1 × 5
     ##    mean    sd     se    lo    hi
     ##   <dbl> <dbl>  <dbl> <dbl> <dbl>
-    ## 1  3.17  1.62 0.0230  3.12  3.21
+    ## 1  3.16  1.63 0.0231  3.11  3.20
 
 **Observations**:
 

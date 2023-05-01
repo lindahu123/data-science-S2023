@@ -24,7 +24,7 @@ Unlike exercises, **challenges will be graded**. The following rubrics define ho
 <!-- ------------------------- -->
 
 | Category    | Needs Improvement                                                                                                | Satisfactory                                                                                                               |
-|-------------|------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------|
+|--------------|----------------------------|-------------------------------|
 | Effort      | Some task **q**'s left unattempted                                                                               | All task **q**'s attempted                                                                                                 |
 | Observed    | Did not document observations, or observations incorrect                                                         | Documented correct observations based on analysis                                                                          |
 | Supported   | Some observations not clearly supported by analysis                                                              | All observations clearly supported by analysis (table, graph, etc.)                                                        |
@@ -123,8 +123,8 @@ df_q1 <-
 ## TASK: Estimate pi using your data from q1
 pi_est <- 
   df_q1 %>% 
-  mutate(in_area = (x^2+y^2 <= 1)) %>% 
-  summarize(mean = mean(in_area)*4, sd = sd(in_area)*4)
+  mutate(in_area = (x^2+y^2 <= 1)*4) %>% 
+  summarize(mean = mean(in_area), sd = sd(in_area))
 pi_est
 ```
 
