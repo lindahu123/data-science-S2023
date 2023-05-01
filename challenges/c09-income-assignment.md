@@ -553,7 +553,9 @@ df_data %>%
     county = fct_reorder(county, income_estimate)
   ) %>%
   ggplot() + 
-  geom_point(mapping = aes(x = population_estimate, y = income_SE))
+  geom_point(mapping = aes(x = population_estimate, y = income_SE), alpha=0.25) +
+  scale_x_log10() +
+  scale_y_log10() 
 ```
 
     ## Warning: Removed 814 rows containing missing values (`geom_point()`).
